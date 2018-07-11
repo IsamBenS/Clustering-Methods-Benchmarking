@@ -4,13 +4,13 @@ Shiny app allowing the user to evaluate the F score for all the populations with
 	
 ## Requirements
   * software: R(Version 3.4.3 to 3.5), Rstudio(optional)
-  * R packages: shiny, shinyjs, ggcyto, flowCore, gtools, Biobase , Rcpp, RcppArmadillo, microbenchmark
+  * R packages: shiny, shinyjs, shinydashboard, flowCore, gplots, Biobase, FlowSOM, stats, microbenchmark
   
 ## Quick installation guide
 
   1. Run the following command in R/RStudio:
 ```
-install.packages(c("shiny", "shinyjs", "gtools", "ggplot2", "Rcpp", "RcppArmadillo", "devtools", "microbenchmark"))
+install.packages(c("shiny", "shinyjs", "shinydashboard", "stats, "devtools", "microbenchmark", "gplots"))
 source("https://bioconductor.org/biocLite.R")
 biocLite("Biobase")
 biocLite("flowCore")
@@ -21,7 +21,7 @@ biocLite("ggcyto")
   2. Run the next commands:
 ```
 library("devtools")
-install_github("isambens/fcsgenerator")
+install_github("isambens/clustering-methods-benchmarking)
 ```
 
   
@@ -29,6 +29,6 @@ install_github("isambens/fcsgenerator")
 
   1. Run the following commands in R/RStudio:
 ```
-library("FCSGenerator")
-FCSGenerator.run()
+library("MethodsBenchmarking")
+MethodsBenchmarking.run()
 ```
