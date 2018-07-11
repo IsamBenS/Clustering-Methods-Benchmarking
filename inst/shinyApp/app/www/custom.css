@@ -1,0 +1,120 @@
+/*=============================================================
+==========================Load Tab============================
+=============================================================*/
+
+#t_2_fr
+{
+	margin-left: 0.2vw;
+	margin-top: 0.5vh;
+	background-color: white;
+	min-height: 40vh;
+	padding: 0.5vw;
+}
+
+h3
+{
+	margin-left: 0.2vw;
+}
+
+
+
+/*=============================================================
+==========================DESCRIPTION==========================
+=============================================================*/
+
+
+
+
+.description_div
+{
+	width: 95%;
+	margin-left: 2%;
+	background-color: gray;
+	color: white;
+	padding: 1vh;
+	padding-left: 1.5vh;
+	margin-bottom: 4vh;
+}
+
+.description_div b
+{
+	font-size: 110%;
+	color: yellow;
+}
+
+.description_div u
+{
+	color: cyan;
+}
+
+.description_div i
+{
+	font-family: Times;
+	font-size: 130%;
+}
+
+.description_div strong
+{
+	color: orange;
+}
+
+
+
+
+/*=============================================================
+============================BUTTONS============================
+=============================================================*/
+
+
+
+
+#run_clustering_button
+{
+	height: 2vh;
+	width: 8%;
+	margin-bottom: 2vh;
+	color: orange;
+	font-size: 1.7vh;
+	padding-bottom: 2%;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px 3px 4px 1px;
+	text-align: center;
+}
+
+#compare,#save_results
+{
+	width: 15%;
+	margin-bottom: 2vh;
+	color: orange;
+	font-size: 2vh;
+	height: 2vh;
+	padding-bottom: 2%;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px 3px 4px 1px;
+	margin-left: 78%;
+}
+
+#compare:hover,#save_results:hover,#run_clustering_button:hover
+{
+	border-width: 4px 1px 1px 3px;
+	color: black;
+}
+
+
+
+
+
+/*=============================================================
+============================SCORES=============================
+=============================================================*/
+
+
+
+
+.img_cl
+{
+	margin-top: 8vh;
+	padding: 1.2vw;
+}
