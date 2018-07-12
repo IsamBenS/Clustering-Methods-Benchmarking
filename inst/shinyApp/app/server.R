@@ -207,13 +207,12 @@ server <- function(input, output, session)
          clustering.variables$available.methods.parameters <- NULL
          if(is.null(clustering.variables$available.methods))
          {
-             temp.dir <- "/methods_Folder/"
+             appDir <- system.file("shinyApp", "app", package = "MethodsBenchmarking")
+			 temp.dir <- paste0(appDir,"/methods_Folder/")
              methods.files <- list.files(temp.dir,pattern = ".R")
-			 print(methods.files)
              lapply(methods.files, function(f)
              {
-				 appDir <- system.file("shinyApp", "app", package = "MethodsBenchmarking")
-                 source(paste0(appDir,temp.dir,f))
+                 source(paste0(temp.dir,f))
                  clustering.variables$available.methods.names <- c(clustering.variables$available.methods.names, strsplit(f,".R"))
                  clustering.variables$available.methods.parameters <- c(clustering.variables$available.methods.parameters, list(fct.parameters))
                  names(clustering.variables$available.methods.parameters) <- clustering.variables$available.methods.names
