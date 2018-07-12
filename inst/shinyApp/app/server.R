@@ -209,6 +209,7 @@ server <- function(input, output, session)
          {
              temp.dir <- "/methods_Folder/"
              methods.files <- list.files(temp.dir,pattern = ".R")
+			 print(methods.files)
              lapply(methods.files, function(f)
              {
 				 appDir <- system.file("shinyApp", "app", package = "MethodsBenchmarking")
