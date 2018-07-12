@@ -207,7 +207,7 @@ server <- function(input, output, session)
          clustering.variables$available.methods.parameters <- NULL
          if(is.null(clustering.variables$available.methods))
          {
-             temp.dir <- paste0(global.values$working.directory,"/methods_Folder/")
+             temp.dir <- "/methods_Folder/"
              methods.files <- list.files(temp.dir,pattern = ".R")
              lapply(methods.files, function(f)
              {
