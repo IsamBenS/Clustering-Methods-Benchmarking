@@ -22,7 +22,7 @@ MethodsBenchmarking.run <- function()
     appDir <- system.file("shinyApp", "app", package = "MethodsBenchmarking")
     if (appDir == "")
     {
-        stop("Could not find app directory. Try re-installing `FCSGenerator`.", call. = FALSE)
+        stop("Could not find app directory. Try re-installing `MethodsBenchmarking`.", call. = FALSE)
     }
 
     shiny::runApp(appDir, display.mode = "normal")
