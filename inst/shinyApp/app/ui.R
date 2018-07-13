@@ -132,9 +132,11 @@ ui <- dashboardPage(
                 box
                 (
                     id="t_4_1",
-                    actionButton("t_4_1_refresh", "Refresh mapping scores"),
-                    actionButton("t_4_1_generate", "Generate scores for all methods in file"),
-                    tableOutput("t_4_1_table")
+                    actionButton("t_4_1_refresh", "Print scores from mapping file"),
+                    actionButton("t_4_1_generate", "Print scores from previous analyses (keywords)"),
+                    tableOutput("t_4_1_table"),
+                    br(),br(),
+                    tableOutput(outputId="t_4_1_params")
                 )
             )
             

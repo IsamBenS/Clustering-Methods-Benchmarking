@@ -4,42 +4,22 @@ library(Biobase)
 add.keyword.to.fcs <- function(fcs, added.keyword, added.keyword.name)
 {
     fcs.out <- fcs
-    fcs.out@description <- c(fcs.out@description,added.keyword)
-    names(fcs.out@description) <- c(names(fcs@description),added.keyword.name)
+    descR <- description(fcs.out)
+    descR[[added.keyword.name]] <- added.keyword
+    fcs.out <- flowFrame(fcs.out@exprs,description=descR)
     
     return(fcs.out)
-}
+} 
 
 write.FCS.CIPHE <- function(fcs, fcs.path)
 {
-    metaData <- data.frame(name = dimnames(fcs@exprs)[[2]], desc = dimnames(fcs@exprs)[[2]])
-    nmb.dim <- ncol(fcs@exprs)
-    metaData$range <- lapply(1:(nmb.dim), function(i)
+    descR <- description(fcs)
+    lapply(c(1:ncol(fcs@exprs)),function(x)
     {
-        return(diff(range(fcs@exprs[,i])))
+        descR[[paste0("$P",x,"R")]] <<- 262144
     })
-    metaData$minRange <- sapply(1:(nmb.dim), function(i)
-    {
-        return(min(fcs@exprs[,i]))
-    })
-    metaData$maxRange <- sapply(1:(nmb.dim), function(i)
-    {
-        return(max(fcs@exprs[,i]))
-    })
-    rownames(metaData) <- sapply(1:(nmb.dim), function(i)
-    {
-        return(paste("$P",i,sep=""))
-    })
-    
-    fcs.out <- fcs
-    parameters(fcs.out) <- AnnotatedDataFrame(metaData)
-    
-    lapply(c(1:ncol(fcs.out@exprs)),function(x)
-    {
-        fcs.out@description[[paste0("$P",x,"R")]] <<- metaData$maxRange[[x]]
-        fcs.out@description[[paste0("$P",x,"B")]] <<- "32"
-        fcs.out@description[[paste0("$P",x,"S")]] <<- colnames(fcs.out@exprs)[x]
-    })
+    fcs.out <- flowFrame(fcs@exprs, description = descR)
+    fcs.out@description <- descR
     
     write.FCS(fcs.out, fcs.path, delimiter = '#')
 }

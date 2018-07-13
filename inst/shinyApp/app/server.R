@@ -4,6 +4,13 @@ library(flowCore)
 library(gplots)
 library(shinyjs)
 
+source("../FilePreHandling.R")
+source("../StatisticalAnalysis.R")
+source("../TimeAnalysis.R")
+source("../EfficiencyAnalysis.R")
+source("../MethodsHandling.R")
+source("../ModifyFCS.R")
+
 server <- function(input, output, session)
 {
     useShinyjs()
@@ -35,7 +42,8 @@ server <- function(input, output, session)
         FG.accuracy.coef.list.1 = NULL,
         raw.FG.accuracy.coef.list.1 = NULL,
         purity.matrix = NULL,
-        scores.table = NULL
+        scores.table = NULL,
+        params.table = NULL
     )
     
     mfi.variables <- reactiveValues(
@@ -207,8 +215,7 @@ server <- function(input, output, session)
          clustering.variables$available.methods.parameters <- NULL
          if(is.null(clustering.variables$available.methods))
          {
-             appDir <- system.file("shinyApp", "app", package = "MethodsBenchmarking")
-			 temp.dir <- paste0(appDir,"/methods_Folder/")
+             temp.dir <- paste0(global.values$working.directory,"/methods_Folder/")
              methods.files <- list.files(temp.dir,pattern = ".R")
              lapply(methods.files, function(f)
              {
@@ -866,6 +873,7 @@ server <- function(input, output, session)
                              }
                              return(x)
                          })
+                         names(params) <- names(clustering.variables$available.methods.parameters[[curr.method.name]])
                      }
                      markers_col <- 0
                      if( !is.null(input$method_markers))
@@ -902,7 +910,7 @@ server <- function(input, output, session)
                      
                      fcs.temp.name <- paste0(basename(names(global.values$fcs.files.fg.proj.1)[[length(global.values$fcs.files.fg.proj.1)]]),".fcs")
                      fcs.temp.dir <- tempdir()
-                     write.FCS(fcs.temp,paste0(fcs.temp.dir,"/",fcs.temp.name))
+                     write.FCS.CIPHE(fcs.temp,paste0(fcs.temp.dir,"/",fcs.temp.name))
                      
                      global.values$fcs.files.fg.proj.1[[1]] <- read.FCS(paste0(fcs.temp.dir,"/",fcs.temp.name), emptyValue = F)
                      
@@ -982,46 +990,45 @@ server <- function(input, output, session)
                 }
                 
             }
-            ref.list.name <- paste0(colnames(global.values$fcs.files.fg.proj.1[[1]])[as.numeric(input$clust_col_selection_fg_1)],"__computed__FG")
-            if(!is.null(out.mat))
-            {
-                out.mat <- cbind(out.mat,ref.list)
-                colnames(out.mat)[ncol(out.mat)] <- ref.list.name
-            }
+            ref.list.name <- colnames(global.values$fcs.files.fg.proj.1[[1]])[as.numeric(input$clust_col_selection_fg_1)]
             
             
             meth.col <- ncol(global.values$fcs.files.fg.proj.1[[1]]@exprs)
-            meth.name <- colnames(global.values$fcs.files.fg.proj.1[[1]])[meth.col]
+            meth.name <- colnames(global.values$fcs.files.fg.proj.1[[1]])[meth.col] 
             if(!is.null(clustering.variables$added.keyword))
             {
                 meth.name <- strsplit(names(clustering.variables$added.keyword),"_")[[1]]
                 meth.name <- meth.name[length(meth.name)]
                 out.fcs@exprs <- cbind(out.fcs@exprs,global.values$fcs.files.fg.proj.1[[1]]@exprs[,meth.col])
-                colnames(out.fcs@exprs)[ncol(out.fcs@exprs)] <- paste0(meth.name,"_clusters")
+                colnames(out.fcs@exprs)[ncol(out.fcs@exprs)] <- paste0(meth.name,"-",ncol(out.fcs@exprs),"_clusters")
             }
             else
             {
-                clustering.variables$added.keyword <- paste0("COMPARED",ncol(out.fcs@exprs)+1,"_",meth.name)
+                meth.col <- as.numeric(input$clust_col_selection_fg_1)
+                clustering.variables$added.keyword <- paste0(ncol(out.fcs@exprs)+1,"__",meth.name)
                 names(clustering.variables$added.keyword) <- paste0("CLMETH_",ncol(out.fcs@exprs)+1,"_",meth.name)
                 out.fcs@exprs <- cbind(out.fcs@exprs,global.values$fcs.files.fg.proj.1[[1]]@exprs[,meth.col])
-                colnames(out.fcs@exprs)[ncol(out.fcs@exprs)] <- paste0(meth.name,"_clusters")
+                colnames(out.fcs@exprs)[ncol(out.fcs@exprs)] <- paste0(meth.name,"-",ncol(out.fcs@exprs),"_clusters")
             }
             
-            if( !(keyword.exists.FCS(out.fcs, paste0("FSCLMETH_",meth.col,"_",meth.name))) )
+            if(!is.null(out.mat))
             {
-                out.fcs <- add.keyword.to.fcs(out.fcs, trunc(mean(analysis.variables$F.beta.coef.list.1[[1]])*10^4)/10^4, paste0("FSCLMETH_",meth.col,"_",meth.name))
-                out.fcs@exprs <- cbind(out.fcs@exprs, NA)
-                colnames(out.fcs@exprs)[ncol(out.fcs@exprs)] <- paste0(meth.name, "_ANNOTATIONS")
-                fcs.annotations <- FPH.get.file.information(global.values$fcs.files.fg.proj.1.annotated,meth.col+1)
-                
-                lapply(1:length(fcs.annotations), function(i) 
-                {
-                    if(!is.na(ordered.annot.associated.pop[i]))
-                    {
-                        out.fcs@exprs[fcs.annotations[[i]][[2]],ncol(out.fcs@exprs)] <<- rep(ordered.annot.associated.pop[i],fcs.annotations[[i]][[1]])
-                    }
-                })
+                out.mat <- cbind(out.mat,ref.list)
+                colnames(out.mat)[ncol(out.mat)] <- paste0(meth.name,".",ncol(out.fcs@exprs))
             }
+            
+            out.fcs <- add.keyword.to.fcs(out.fcs, trunc(mean(analysis.variables$F.beta.coef.list.1[[1]])*10^4)/10^4, paste0("FSCLMETH_",meth.col,"_",meth.name))
+            out.fcs@exprs <- cbind(out.fcs@exprs, NA)
+            colnames(out.fcs@exprs)[ncol(out.fcs@exprs)] <- paste0(meth.name,"-",ncol(out.fcs@exprs)-1,"_ANNOTATIONS")
+            fcs.annotations <- FPH.get.file.information(global.values$fcs.files.fg.proj.1.annotated,meth.col+1)
+            
+            lapply(1:length(fcs.annotations), function(i) 
+            {
+                if(!is.na(ordered.annot.associated.pop[i]))
+                {
+                    out.fcs@exprs[fcs.annotations[[i]][[2]],ncol(out.fcs@exprs)] <<- rep(ordered.annot.associated.pop[i],fcs.annotations[[i]][[1]])
+                }
+            })
             
             
             t <- basename(names(global.values$fcs.files.fg.ref)[1])
@@ -1039,7 +1046,7 @@ server <- function(input, output, session)
     
     
     
-    observeEvent(input$t_4_1_refresh,
+    observeEvent(input$t_4_1_refresh, 
     {
         shinyjs::disable("t_4_1_refresh")
         if( !is.null(global.values$fcs.files.fg.mapping) && ncol(global.values$fcs.files.fg.mapping)>2 )
@@ -1048,12 +1055,50 @@ server <- function(input, output, session)
             meth.names <- colnames(global.values$fcs.files.fg.mapping)[c(-1,-2)]
             colnames(analysis.variables$scores.table) <- c("POP",meth.names)
             analysis.variables$scores.table <- rbind(analysis.variables$scores.table,0)
+                
+                param.ncol <- max(sapply(clustering.variables$available.methods.parameters, function(k){return(length(k))}))+1
+            analysis.variables$params.table <- matrix("",ncol=param.ncol)
+                
             lapply(2:ncol(analysis.variables$scores.table), function(i)
             {
+                
+                meth.id <- strsplit(meth.names[i-1],".")[[1]][2]
+                key.list <- get.keywords.with.keypart.FCS(global.values$fcs.files.fg.ref[[1]],paste0("CLMETH_",meth.id))
+                if(length(key.list)>0)
+                {
+                    lapply(1:length(key.list), function(k)
+                    {
+                        if(strsplit(names(key.list[k]),"_")[[1]][1] != "FSCLMETH")
+                        {
+                            t <- strsplit(key.list[k],"__")[[1]]
+                            if(length(t)>2)
+                            {
+                                col.id <- as.numeric(strsplit(names(key.list[k]),"_")[[1]][2])
+                                method.name <- paste(strsplit(names(key.list[k]),"_")[[1]][3], strsplit(names(key.list[k]),"_")[[1]][2], sep="_")
+                                if(nrow(analysis.variables$params.table)>1)
+                                {
+                                    analysis.variables$params.table <<- rbind(analysis.variables$params.table,0)
+                                }
+                                else
+                                {
+                                    analysis.variables$params.table <- matrix("",ncol=param.ncol)
+                                }
+                                analysis.variables$params.table[nrow(analysis.variables$params.table),1] <<- method.name
+                                lapply(2:length(t), function(l)
+                                {
+                                    pa.name <- strsplit(t[l],"-")[[1]][1]
+                                    pa <- strsplit(t[l],"-")[[1]][2]
+                                    analysis.variables$params.table[nrow(analysis.variables$params.table),l] <<- paste0(pa.name,": ",pa)
+                                })
+                            }
+                        }
+                    })
+                }
                 val <- analysis.variables$scores.table[-nrow(analysis.variables$scores.table),i]
                 analysis.variables$scores.table[nrow(analysis.variables$scores.table),i] <<- trunc(mean(as.numeric(val[!is.na(val)]))*10^4)/10^4
             })
             analysis.variables$scores.table[nrow(analysis.variables$scores.table),1] <- "GLOBAL (mean)"
+            colnames(analysis.variables$params.table) <- c("method","parameters",rep(" ",-2+param.ncol))
         }
         shinyjs::enable("t_4_1_refresh")
     })
@@ -1076,10 +1121,46 @@ server <- function(input, output, session)
             })
             colnames(analysis.variables$scores.table)[1] <- "POP"
             
+            param.ncol <- max(sapply(clustering.variables$available.methods.parameters, function(k){return(length(k))}))+1
+            analysis.variables$params.table <- matrix("",ncol=param.ncol)
+            key.list <- get.keywords.with.keypart.FCS(global.values$fcs.files.fg.ref[[1]],"CLMETH_")
+            if(length(key.list)>0)
+            {
+                lapply(1:length(key.list), function(k)
+                {
+                    if(strsplit(names(key.list[k]),"_")[[1]][1] != "FSCLMETH")
+                    {
+                        t <- strsplit(key.list[k],"__")[[1]]
+                        if(length(t)>2)
+                        {
+                            col.id <- as.numeric(strsplit(names(key.list[k]),"_")[[1]][2])
+                            method.name <- paste(strsplit(names(key.list[k]),"_")[[1]][3], strsplit(names(key.list[k]),"_")[[1]][2], sep="_")
+                            if(nrow(analysis.variables$params.table)>1)
+                            {
+                                analysis.variables$params.table <<- rbind(analysis.variables$params.table,0)
+                            }
+                            else
+                            {
+                                analysis.variables$params.table <- matrix("",ncol=param.ncol)
+                            }
+                            analysis.variables$params.table[nrow(analysis.variables$params.table),1] <<- method.name
+                            lapply(2:length(t), function(l)
+                            {
+                                pa.name <- strsplit(t[l],"-")[[1]][1]
+                                pa <- strsplit(t[l],"-")[[1]][2]
+                                analysis.variables$params.table[nrow(analysis.variables$params.table),l] <<-paste0(pa.name,": ",pa)
+                            })
+                        }
+                    }
+                })
+            }
+            
+            
         }
         shinyjs::enable("t_4_1_generate")
     })
     
     
     output$t_4_1_table <- renderTable(analysis.variables$scores.table)
+    output$t_4_1_params <- renderTable(analysis.variables$params.table)
 }
