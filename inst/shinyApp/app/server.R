@@ -4,12 +4,6 @@ library(flowCore)
 library(gplots)
 library(shinyjs)
 
-source("../FilePreHandling.R")
-source("../StatisticalAnalysis.R")
-source("../TimeAnalysis.R")
-source("../EfficiencyAnalysis.R")
-source("../MethodsHandling.R")
-source("../ModifyFCS.R")
 
 server <- function(input, output, session)
 {
