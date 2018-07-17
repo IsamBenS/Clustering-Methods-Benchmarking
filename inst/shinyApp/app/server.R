@@ -1046,6 +1046,7 @@ server <- function(input, output, session)
         if( !is.null(global.values$fcs.files.fg.mapping) && ncol(global.values$fcs.files.fg.mapping)>2 )
         {
             analysis.variables$scores.table <- global.values$fcs.files.fg.mapping
+            print(colnames(global.values$fcs.files.fg.mapping))
             meth.names <- colnames(global.values$fcs.files.fg.mapping)[c(-1,-2)]
             if("clusterID.Scaffold"%in%colnames(global.values$fcs.files.fg.mapping) &&
                "pop"%in%colnames(global.values$fcs.files.fg.mapping))
