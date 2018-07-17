@@ -951,7 +951,6 @@ server <- function(input, output, session)
         },
         content = function(file)
         {
-            view(description(global.values$fcs.files.fg.ref[[1]]))
             shinyjs::disable("save_results")
             progress <- Progress$new()
             progress$set(message="EXPORTING RESULTS", value=0)
