@@ -1060,11 +1060,8 @@ server <- function(input, output, session)
                         print(i)
                         cols.to.add <- c(cols.to.add,i)
                     }
-                    else
-                    {
-                        print("err")  
-                    }
                 }
+                print(cols.to.add)
                 analysis.variables$scores.table <- global.values$fcs.files.fg.mapping[,c("clusterID.Scaffold","pop",cols.to.add)]
                 meth.names <- colnames(global.values$fcs.files.fg.mapping)[cols.to.add]
             }
