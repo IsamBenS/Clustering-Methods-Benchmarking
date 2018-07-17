@@ -973,7 +973,8 @@ server <- function(input, output, session)
             
             ann.fbeta.scores <- analysis.variables$F.beta.coef.list.1[[1]]
             ordered.annot.associated.pop <- analysis.variables$annotations.relations.id.list.1[[1]][-1]
-            ref.list <- rep(NA,length(FPH.get.file.information(global.values$fcs.files.fg.ref[[1]],as.numeric(input$clust_col_selection_fg_r))))
+            ref.info <- FPH.get.file.information(global.values$fcs.files.fg.ref[[1]],as.numeric(input$clust_col_selection_fg_r))
+            ref.list <- rep(NA,length(ref.info))
             for (i in 1:length(ref.list)) 
             {
                 t <- which(ordered.annot.associated.pop==i)
@@ -988,6 +989,14 @@ server <- function(input, output, session)
                 
             }
             ref.list.name <- colnames(global.values$fcs.files.fg.proj.1[[1]])[as.numeric(input$clust_col_selection_fg_1)]
+            real.pop.order <- c()
+            for(i in 1:length(ref.info))
+            {
+                real.pop.order <- c(real.pop.order,
+                                    unique(fcs.files.fg.proj.1[[1]]@exprs[ref.info[[i]][[2]],as.numeric(input$clust_col_selection_fg_1)])[[1]])
+            }
+            ref.list <- ref.list[real.pop.order]
+            
             
             
             meth.col <- ncol(global.values$fcs.files.fg.proj.1[[1]]@exprs)
@@ -1054,7 +1063,7 @@ server <- function(input, output, session)
         {
             analysis.variables$scores.table <- global.values$fcs.files.fg.mapping
             meth.names <- colnames(global.values$fcs.files.fg.mapping)[c(-1,-2)]
-            if("clusterID.Scaffold"%in%colnames(global.values$fcs.files.fg.mapping) &&
+            if("popID.Scaffold"%in%colnames(global.values$fcs.files.fg.mapping) &&
                "pop"%in%colnames(global.values$fcs.files.fg.mapping))
             {
                 cols.to.add <- c()
@@ -1065,7 +1074,7 @@ server <- function(input, output, session)
                         cols.to.add <- c(cols.to.add,i)
                     }
                 }
-                analysis.variables$scores.table <- cbind(global.values$fcs.files.fg.mapping[,c("clusterID.Scaffold","pop")],
+                analysis.variables$scores.table <- cbind(global.values$fcs.files.fg.mapping[,c("popID.Scaffold","pop")],
                                                          global.values$fcs.files.fg.mapping[,cols.to.add])
                 meth.names <- colnames(global.values$fcs.files.fg.mapping)[cols.to.add]
             }
