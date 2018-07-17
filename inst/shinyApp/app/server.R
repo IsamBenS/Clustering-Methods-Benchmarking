@@ -1062,7 +1062,7 @@ server <- function(input, output, session)
                     }
                     else
                     {
-                        print("err") 
+                        print("err")  
                     }
                 }
                 analysis.variables$scores.table <- global.values$fcs.files.fg.mapping[,c("clusterID.Scaffold","pop",cols.to.add)]
