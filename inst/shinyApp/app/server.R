@@ -951,6 +951,9 @@ server <- function(input, output, session)
         },
         content = function(file)
         {
+            shinyjs::disable("save_results")
+            progress <- Progress$new()
+            progress$set(message="EXPORTING RESULTS", value=0)
             temp.dir <- ""
             fnames <- c(1,2)
             
@@ -1033,6 +1036,9 @@ server <- function(input, output, session)
             
             zip(zipfile=file,files=fnames)
             file.remove(fnames)
+            progress$inc(1, detail="FILES EXPORTED")
+            progress$close()
+            shinyjs::enable("save_results")
         },
         contentType = "application/zip"
     )
