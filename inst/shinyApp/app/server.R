@@ -1008,7 +1008,7 @@ server <- function(input, output, session)
             if(!is.null(out.mat))
             {
                 out.mat <- cbind(out.mat,ref.list)
-                colnames(out.mat)[ncol(out.mat)] <- paste0(meth.name,".",ncol(out.fcs@exprs))
+                colnames(out.mat)[ncol(out.mat)] <- paste0(meth.name,".",ncol(out.fcs@exprs),".fg")
             }
             
             out.fcs <- add.keyword.to.fcs(out.fcs, trunc(mean(analysis.variables$F.beta.coef.list.1[[1]])*10^4)/10^4, paste0("FSCLMETH_",meth.col,"_",meth.name))
@@ -1045,7 +1045,21 @@ server <- function(input, output, session)
         shinyjs::disable("t_4_1_refresh")
         if( !is.null(global.values$fcs.files.fg.mapping) && ncol(global.values$fcs.files.fg.mapping)>2 )
         {
-            analysis.variables$scores.table <- global.values$fcs.files.fg.mapping[,-2]
+            analysis.variables$scores.table <- global.values$fcs.files.fg.mapping
+            if("clusterID.Scaffold"%in%colnames(global.values$fcs.files.fg.mapping) &&
+               "pop"%in%colnames(global.values$fcs.files.fg.mapping))
+            {
+                meth.names <- c("clusterID.Scaffold","pop")
+                cols.to.add <- c()
+                for(i in 1:ncol(global.values$fcs.files.fg.mapping))
+                {
+                    if( length(grep(".fgcol",colnames(global.values$fcs.files.fg.mapping)[i])) > 0 )
+                    {
+                        cols.to.add <- c(cols.to.add,i)
+                    }
+                }
+                analysis.variables$scores.table <- global.values$fcs.files.fg.mapping[,c("clusterID.Scaffold","pop",cols.to.add)]
+            }
             meth.names <- colnames(global.values$fcs.files.fg.mapping)[c(-1,-2)]
             colnames(analysis.variables$scores.table) <- c("POP",meth.names)
             analysis.variables$scores.table <- rbind(analysis.variables$scores.table,0)
