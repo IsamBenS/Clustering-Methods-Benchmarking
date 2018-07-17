@@ -1032,6 +1032,7 @@ server <- function(input, output, session)
             write.csv(out.mat, fnames[2], col.names = T, row.names = F)
             
             zip(zipfile=file,files=fnames)
+            file.remove(fnames)
         },
         contentType = "application/zip"
     )
