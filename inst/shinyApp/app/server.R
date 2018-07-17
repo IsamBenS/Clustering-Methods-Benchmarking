@@ -1008,7 +1008,7 @@ server <- function(input, output, session)
             if(!is.null(out.mat))
             {
                 out.mat <- cbind(out.mat,ref.list)
-                colnames(out.mat)[ncol(out.mat)] <- paste0(meth.name,".",ncol(out.fcs@exprs),".fgcol")
+                colnames(out.mat)[ncol(out.mat)] <- paste0(meth.name,".",ncol(out.fcs@exprs),".fg")
             }
             
             out.fcs <- add.keyword.to.fcs(out.fcs, trunc(mean(analysis.variables$F.beta.coef.list.1[[1]])*10^4)/10^4, paste0("FSCLMETH_",meth.col,"_",meth.name))
@@ -1051,26 +1051,22 @@ server <- function(input, output, session)
                "pop"%in%colnames(global.values$fcs.files.fg.mapping))
             {
                 cols.to.add <- c()
-                print("adding")
                 for(i in 1:ncol(global.values$fcs.files.fg.mapping))
                 {
-                    if( grep(".fgcol",colnames(global.values$fcs.files.fg.mapping)[i]) )
+                    if( length(grep(".fgcol",colnames(global.values$fcs.files.fg.mapping)[i])) > 0 )
                     {
-                        print(i)
                         cols.to.add <- c(cols.to.add,i)
-                    }
-                    else
-                    {
-                        print("err")
                     }
                 }
                 analysis.variables$scores.table <- global.values$fcs.files.fg.mapping[,c("clusterID.Scaffold","pop",cols.to.add)]
                 meth.names <- colnames(global.values$fcs.files.fg.mapping)[cols.to.add]
             }
+            print(length(meth.names))
+            print(ncol(analysis.variables$scores.table))
             colnames(analysis.variables$scores.table) <- c("ID","POP",meth.names)
             analysis.variables$scores.table <- rbind(analysis.variables$scores.table,0)
                 
-            param.ncol <- max(sapply(clustering.variables$available.methods.parameters, function(k){return(length(k))}))+1
+                param.ncol <- max(sapply(clustering.variables$available.methods.parameters, function(k){return(length(k))}))+1
             analysis.variables$params.table <- matrix("",ncol=param.ncol)
                 
             lapply(2:ncol(analysis.variables$scores.table), function(i)
