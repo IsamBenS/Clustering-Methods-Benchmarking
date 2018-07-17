@@ -1053,22 +1053,18 @@ server <- function(input, output, session)
         if( !is.null(global.values$fcs.files.fg.mapping) && ncol(global.values$fcs.files.fg.mapping)>2 )
         {
             analysis.variables$scores.table <- global.values$fcs.files.fg.mapping
-            print(colnames(global.values$fcs.files.fg.mapping))
             meth.names <- colnames(global.values$fcs.files.fg.mapping)[c(-1,-2)]
             if("clusterID.Scaffold"%in%colnames(global.values$fcs.files.fg.mapping) &&
                "pop"%in%colnames(global.values$fcs.files.fg.mapping))
             {
                 cols.to.add <- c()
-                print("adding")
                 for(i in 1:ncol(global.values$fcs.files.fg.mapping))
                 {
                     if( length(grep(".fgcol",colnames(global.values$fcs.files.fg.mapping)[i]))>0 )
                     {
-                        print(i)
                         cols.to.add <- c(cols.to.add,i)
                     }
                 }
-                print(cols.to.add)
                 analysis.variables$scores.table <- cbind(global.values$fcs.files.fg.mapping[,c("clusterID.Scaffold","pop")],
                                                          global.values$fcs.files.fg.mapping[,cols.to.add])
                 meth.names <- colnames(global.values$fcs.files.fg.mapping)[cols.to.add]
