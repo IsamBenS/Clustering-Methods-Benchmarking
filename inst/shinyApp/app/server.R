@@ -1026,7 +1026,7 @@ server <- function(input, output, session)
                 colnames(out.mat)[ncol(out.mat)] <- paste0(meth.name,".",ncol(out.fcs@exprs),".fgcol")
             }
             
-            out.fcs <- add.keyword.to.fcs(out.fcs, trunc(mean(analysis.variables$F.beta.coef.list.1[[1]])*10^4)/10^4, paste0("FSCLMETH_",meth.col,"_",meth.name))
+            out.fcs <- add.keyword.to.fcs(out.fcs, trunc(mean(analysis.variables$F.beta.coef.list.1[[1]])*10^4)/10^4, paste0("FSCLMETH_",ncol(out.fcs@exprs),"_",meth.name))
             out.fcs@exprs <- cbind(out.fcs@exprs, NA)
             colnames(out.fcs@exprs)[ncol(out.fcs@exprs)] <- paste0(meth.name,"-",ncol(out.fcs@exprs)-1,"_ANNOTATIONS")
             fcs.annotations <- FPH.get.file.information(global.values$fcs.files.fg.proj.1.annotated,meth.col+1)
