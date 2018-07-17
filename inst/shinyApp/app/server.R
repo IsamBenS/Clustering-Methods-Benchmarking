@@ -921,7 +921,7 @@ server <- function(input, output, session)
                          },
                          content = function(file)
                          {
-                             write.FCS.CIPHE(global.values$fcs.files.fg.proj.1[[1]], file, delimiter="#")
+                             write.FCS.CIPHE(global.values$fcs.files.fg.proj.1[[1]], file)
                          }
                      )
                      
