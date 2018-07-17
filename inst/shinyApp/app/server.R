@@ -1014,6 +1014,7 @@ server <- function(input, output, session)
                 meth.col <- as.numeric(input$clust_col_selection_fg_1)
                 clustering.variables$added.keyword <- paste0(ncol(out.fcs@exprs)+1,"__",meth.name)
                 names(clustering.variables$added.keyword) <- paste0("CLMETH_",ncol(out.fcs@exprs)+1,"_",meth.name)
+                out.fcs <- add.keyword.to.fcs(out.fcs, clustering.variables$added.keyword, names(clustering.variables$added.keyword))
                 out.fcs@exprs <- cbind(out.fcs@exprs,global.values$fcs.files.fg.proj.1[[1]]@exprs[,meth.col])
                 colnames(out.fcs@exprs)[ncol(out.fcs@exprs)] <- paste0(meth.name,"-",ncol(out.fcs@exprs),"_clusters")
             }
