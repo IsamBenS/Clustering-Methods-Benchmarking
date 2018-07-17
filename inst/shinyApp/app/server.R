@@ -993,7 +993,7 @@ server <- function(input, output, session)
             for(i in 1:length(ref.info))
             {
                 real.pop.order <- c(real.pop.order,
-                                    unique(fcs.files.fg.ref[[1]]@exprs[ref.info[[i]][[2]],as.numeric(input$clust_col_selection_fg_r)])[[1]])
+                                    unique(global.values$fcs.files.fg.ref[[1]]@exprs[ref.info[[i]][[2]],as.numeric(input$clust_col_selection_fg_r)])[[1]])
             }
             ref.list <- ref.list[real.pop.order]
             
