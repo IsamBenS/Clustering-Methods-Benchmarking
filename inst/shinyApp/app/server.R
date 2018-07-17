@@ -1062,7 +1062,8 @@ server <- function(input, output, session)
                     }
                 }
                 print(cols.to.add)
-                analysis.variables$scores.table <- global.values$fcs.files.fg.mapping[,c("clusterID.Scaffold","pop",cols.to.add)]
+                analysis.variables$scores.table <- cbind(global.values$fcs.files.fg.mapping[,c("clusterID.Scaffold","pop")],
+                                                         global.values$fcs.files.fg.mapping[,cols.to.add])
                 meth.names <- colnames(global.values$fcs.files.fg.mapping)[cols.to.add]
             }
             colnames(analysis.variables$scores.table) <- c("ID","POP",meth.names)
