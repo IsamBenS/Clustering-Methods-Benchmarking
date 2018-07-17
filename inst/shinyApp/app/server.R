@@ -1010,6 +1010,7 @@ server <- function(input, output, session)
             }
             else
             {
+                print("adding key")
                 meth.col <- as.numeric(input$clust_col_selection_fg_1)
                 clustering.variables$added.keyword <- paste0(ncol(out.fcs@exprs)+1,"__",meth.name)
                 names(clustering.variables$added.keyword) <- paste0("CLMETH_",ncol(out.fcs@exprs)+1,"_",meth.name)
