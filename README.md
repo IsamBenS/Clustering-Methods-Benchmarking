@@ -22,7 +22,7 @@ biocLite("ggcyto")
   2. Run the next commands:
 ```
 library("devtools")
-install_github("isambens/clustering-methods-benchmarking)
+install_github("isambens/clustering-methods-benchmarking")
 ```
 
   
