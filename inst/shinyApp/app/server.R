@@ -921,7 +921,7 @@ server <- function(input, output, session)
                          },
                          content = function(file)
                          {
-                             write.FCS(global.values$fcs.files.fg.proj.1[[1]], file, delimiter="#")
+                             write.FCS.CIPHE(global.values$fcs.files.fg.proj.1[[1]], file, delimiter="#")
                          }
                      )
                      
@@ -951,6 +951,7 @@ server <- function(input, output, session)
         },
         content = function(file)
         {
+            view(description(global.values$fcs.files.fg.ref[[1]]))
             shinyjs::disable("save_results")
             progress <- Progress$new()
             progress$set(message="EXPORTING RESULTS", value=0)
