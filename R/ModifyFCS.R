@@ -14,18 +14,6 @@ add.keyword.to.fcs <- function(fcs, added.keyword, added.keyword.name)
 write.FCS.CIPHE <- function(fcs, fcs.path)
 {
     descR <- description(fcs)
-    for(x in 1:ncol(fcs@exprs))
-    {
-		if(!is.null(descR[[paste0("$P",x,"R")]]))
-		{
-			descR[[paste0("$P",x,"R")]] <- 262144
-		}
-		else
-		{
-			descR <- c(descR, 262144)
-			names(descR)[length(descR)] <- paste0("$P",x,"R")
-		}
-    }
     fcs.out <- flowFrame(fcs@exprs, description = descR)
     fcs.out@description <- descR
     
