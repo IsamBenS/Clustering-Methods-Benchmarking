@@ -1055,7 +1055,7 @@ server <- function(input, output, session)
                 print("adding")
                 for(i in 1:ncol(global.values$fcs.files.fg.mapping))
                 {
-                    if( grep(".fgcol",colnames(global.values$fcs.files.fg.mapping)[i]) )
+                    if( length(grep(".fgcol",colnames(global.values$fcs.files.fg.mapping)[i]))>0 )
                     {
                         print(i)
                         cols.to.add <- c(cols.to.add,i)
