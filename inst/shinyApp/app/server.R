@@ -1049,7 +1049,6 @@ server <- function(input, output, session)
             if("clusterID.Scaffold"%in%colnames(global.values$fcs.files.fg.mapping) &&
                "pop"%in%colnames(global.values$fcs.files.fg.mapping))
             {
-                meth.names <- c("clusterID.Scaffold","pop")
                 cols.to.add <- c()
                 for(i in 1:ncol(global.values$fcs.files.fg.mapping))
                 {
@@ -1061,6 +1060,8 @@ server <- function(input, output, session)
                 analysis.variables$scores.table <- global.values$fcs.files.fg.mapping[,c("clusterID.Scaffold","pop",cols.to.add)]
             }
             meth.names <- colnames(global.values$fcs.files.fg.mapping)[c(-1,-2)]
+            print(length(meth.names))
+            print(ncol(analysis.variables$scores.table))
             colnames(analysis.variables$scores.table) <- c("ID","POP",meth.names)
             analysis.variables$scores.table <- rbind(analysis.variables$scores.table,0)
                 
