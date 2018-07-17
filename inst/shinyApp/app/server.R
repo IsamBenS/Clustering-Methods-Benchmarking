@@ -1061,7 +1061,7 @@ server <- function(input, output, session)
                 analysis.variables$scores.table <- global.values$fcs.files.fg.mapping[,c("clusterID.Scaffold","pop",cols.to.add)]
             }
             meth.names <- colnames(global.values$fcs.files.fg.mapping)[c(-1,-2)]
-            colnames(analysis.variables$scores.table) <- c("POP",meth.names)
+            colnames(analysis.variables$scores.table) <- c("ID","POP",meth.names)
             analysis.variables$scores.table <- rbind(analysis.variables$scores.table,0)
                 
                 param.ncol <- max(sapply(clustering.variables$available.methods.parameters, function(k){return(length(k))}))+1
