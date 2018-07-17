@@ -1167,6 +1167,7 @@ server <- function(input, output, session)
                     }
                 })
             }
+            colnames(analysis.variables$params.table) <- c("method","parameters",rep(" ",-2+param.ncol))
             
             
         }
