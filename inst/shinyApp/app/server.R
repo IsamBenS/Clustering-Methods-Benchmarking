@@ -144,10 +144,11 @@ server <- function(input, output, session)
          shinyjs::disable("ref_selection_fg")
          shinyjs::disable("compare")
          shinyjs::disable("save_results")
+         shinyjs::disable("ref_use_same_fg")
          
          removeUI("#ref_files_list")
          removeUI("#download_enriched_file")
-         shinyjs::enable("run_clustering_button")
+         shinyjs::disable("run_clustering_button")
          
          m <- matrix(nrow=1,ncol=2)
          m[1,1] = "FlowFrames"
@@ -156,6 +157,8 @@ server <- function(input, output, session)
          global.values$fcs.files.fg.ref <- NULL
          global.values$fcs.files.fg.mapping <- NULL
          clustering.variables$added.keyword <- NULL
+         analysis.variables$scores.table <- NULL
+         analysis.variables$params.table <- NULL
          global.values$use.enriched.file <- F
          if(length(temp.files) != 0)
          {
@@ -222,10 +225,13 @@ server <- function(input, output, session)
          
          updateSelectInput(session, "method_selection_fg_r", "Select Methods", choices=clustering.variables$available.methods.names,
                            selected = clustering.variables$available.methods.names)
+         updateCheckboxInput(session,"ref_use_same_fg", "Use As Test",value = F)
          
          
          shinyjs::enable("ref_selection_fg")
          shinyjs::enable("compare")
+         shinyjs::enable("ref_use_same_fg")
+         shinyjs::enable("run_clustering_button")
      })
     
     observeEvent(input$ref_mapping_fg,
@@ -1128,9 +1134,15 @@ server <- function(input, output, session)
             })
             analysis.variables$scores.table[nrow(analysis.variables$scores.table),1] <- "GLOBAL (mean)"
             colnames(analysis.variables$params.table) <- c("method","parameters",rep(" ",-2+param.ncol))
+            if(nrow(analysis.variables$params.table)==0)
+            {
+                analysis.variables$params.table <- NULL
+            }
         }
         shinyjs::enable("t_4_1_refresh")
     })
+    
+    
     
     observeEvent(input$t_4_1_generate,
     {
@@ -1184,6 +1196,10 @@ server <- function(input, output, session)
                 })
             }
             colnames(analysis.variables$params.table) <- c("method","parameters",rep(" ",-2+param.ncol))
+            if(nrow(analysis.variables$params.table)==0)
+            {
+                analysis.variables$params.table <- NULL
+            }
             
             
         }
